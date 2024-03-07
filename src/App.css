@@ -1,38 +1,42 @@
 .App {
-  text-align: center;
+  background-color: #ededed;
+  padding: 5px;
+  height: 100vh;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* CSS trong file YourComponent.css */
+.table-container {
+  max-height: 200px; /* Đặt chiều cao tối đa */
+  overflow-y: auto; /* Thêm thanh cuộn dọc khi nội dung vượt quá chiều cao */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.table-container::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.table-container::-webkit-scrollbar-thumb {
+  background-color: #6c757d;
+  border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background-color: #f8f9fa;
+}
+
+/* Ẩn thanh cuộn khi nội dung không vượt quá chiều cao tối đa */
+.table-container:not(:hover)::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.form-search {
+  padding: 6px 4px 4px;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  flex-direction: row;
+  justify-content: end;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.form-search-children input {
+  height: 25px;
+  margin: 3px;
 }
