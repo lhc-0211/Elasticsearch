@@ -6,7 +6,7 @@ import ModalDetaiAPI from "./modal/modalDetailAPI.jsx";
 const DetailAPI = () => {
   const [dataListAPI, setdataListAPI] = useState([]);
   const [id, setId] = useState(null);
-  const [modalShow, setModalShow] = useState(true);
+  const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
     getElasticSearchData();
@@ -51,23 +51,17 @@ const DetailAPI = () => {
   return (
     <div className=" p-2">
       <div className="">
-        <div>search</div>
         <div
           className="table-container"
           style={{
-            maxHeight: "325px",
+            maxHeight: "285px",
             overflowY: "scroll",
             border: "1px solid #D9D9D9",
           }}
         >
-          <Table striped="columns">
+          <Table>
             <thead>
-              <tr
-                className="sticky-top"
-                style={{
-                  borderBottom: "1px #D9D9D9",
-                }}
-              >
+              <tr className="sticky-top row_table_title">
                 <th>Project</th>
                 <th>Group</th>
                 <th>Cmd</th>
@@ -75,13 +69,14 @@ const DetailAPI = () => {
                 <th>Method</th>
                 <th>Data</th>
                 <th>Status</th>
-                <th colSpan={2}>Time</th>
+                <th>Time</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
               {dataListAPI.map((item, index) => {
                 return (
-                  <tr key={index}>
+                  <tr key={index} className="row_table_detail">
                     <td>{item._source.api.project}</td>
                     <td>{item._source.api.group}</td>
                     <td>{item._source.api.cmd}</td>

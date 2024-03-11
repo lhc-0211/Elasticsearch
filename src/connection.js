@@ -1,6 +1,6 @@
 import { Client } from "elasticsearch-browser";
 const client = new Client({
-  host: "http://192.168.100.64:9200",
+  host: "http://192.168.174.142:9200",
   maxRetries: 5,
   requestTimeout: 60000,
 });

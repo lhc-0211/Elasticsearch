@@ -24,7 +24,6 @@
   background-color: #f8f9fa;
 }
 
-/* Ẩn thanh cuộn khi nội dung không vượt quá chiều cao tối đa */
 .table-container:not(:hover)::-webkit-scrollbar-thumb {
   background-color: transparent;
 }
@@ -32,11 +31,33 @@
 .form-search {
   padding: 6px 4px 4px;
   display: flex;
-  flex-direction: row;
+  /* flex-direction: row; */
   justify-content: end;
+  flex-wrap: wrap;
 }
 
 .form-search-children input {
   height: 25px;
   margin: 3px;
+}
+
+Button {
+  height: 35px;
+}
+
+Table {
+  margin-bottom: 0px !important;
+}
+
+.row_table_title th:not(:last-child) {
+  border-right: 1px solid #d9d9d9;
+}
+
+.row_table_detail td:not(:last-child) {
+  border-right: 1px solid #d9d9d9;
+}
+
+input {
+  border-radius: 5px;
+  border: 1px solid #b1b0b0;
 }

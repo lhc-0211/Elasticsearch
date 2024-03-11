@@ -1,6 +1,7 @@
 import React, { useState, useEffect, memo } from "react";
 import { Table } from "react-bootstrap";
 import client from "../connection.js";
+import DashBoardRes from "./echart/dasboardRes.js";
 
 const RequestTime = () => {
   const [dataListAPI, setDataListAPI] = useState([]);
@@ -48,9 +49,9 @@ const RequestTime = () => {
       const apiCmd = currentItem._source.api.cmd;
       if (!accumulator[apiCmd]) {
         accumulator[apiCmd] = {
-          count: 0,
-          errors: 0,
-          avgTime: 0,
+          count: 1,
+          errors: 1,
+          avgTime: 1,
         };
       } else {
         accumulator[apiCmd].count += 1;
@@ -75,21 +76,12 @@ const RequestTime = () => {
         </div>
         <div className="form-search-children">
           <label htmlFor="">Thời gian</label>
-          <input type="text" />
+          <input type="date" />
         </div>
       </div>
       <div className="d-flex col-md-12 p-2">
         <div className="col-md-5 mx-1">
-          <div
-            style={{
-              height: "150px",
-              alignItems: "center",
-              paddingTop: "30px",
-              border: "1px solid",
-            }}
-          >
-            Biểu đồ số lượng request/ 5 phút
-          </div>
+          <DashBoardRes />
         </div>
         <div className="col-md-7">
           <div
@@ -98,16 +90,12 @@ const RequestTime = () => {
               maxHeight: "150px",
               overflowY: "scroll",
               border: "1px solid #D9D9D9",
+              marginRight: "4px",
             }}
           >
-            <Table striped="columns">
+            <Table>
               <thead>
-                <tr
-                  className="sticky-top"
-                  style={{
-                    borderBottom: "1px #D9D9D9",
-                  }}
-                >
+                <tr className="sticky-top row_table_title">
                   <th>API</th>
                   <th>Count</th>
                   <th>Errors</th>
@@ -117,7 +105,7 @@ const RequestTime = () => {
               <tbody>
                 {dataListAPI.map((item, index) => {
                   return (
-                    <tr key={index}>
+                    <tr key={index} className="row_table_detail">
                       <td>{item.api.cmd}</td>
                       <td>{item.count}</td>
                       <td>{item.errors}</td>
