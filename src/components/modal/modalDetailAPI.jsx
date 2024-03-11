@@ -53,7 +53,7 @@ const ModalDetaiAPI = (props) => {
       <Modal.Body>
         <div className="">
           <div className="form-group d-flex col-md-12 w-100">
-            <div className="d-flex flex-column w-75 m-1">
+            <div className="form-group-child w-75 m-1">
               <label htmlFor="">Project</label>
               <input
                 type="text"
@@ -61,7 +61,7 @@ const ModalDetaiAPI = (props) => {
                 disabled
               />
             </div>
-            <div className="d-flex flex-column w-75 m-1">
+            <div className="form-group-child w-75 m-1">
               <label htmlFor="">Group</label>
               <input
                 type="text"
@@ -69,7 +69,7 @@ const ModalDetaiAPI = (props) => {
                 disabled
               />
             </div>
-            <div className="d-flex flex-column w-75 m-1">
+            <div className="form-group-child w-75 m-1">
               <label htmlFor="">Cmd</label>
               <input
                 type="text"
@@ -79,7 +79,7 @@ const ModalDetaiAPI = (props) => {
             </div>
           </div>
           <div className="form-group d-flex mt-2 col-md-12 ">
-            <div className="d-flex flex-column w-75 m-1">
+            <div className="form-group-child w-75 m-1">
               <label htmlFor="">Path</label>
               <input
                 type="text"
@@ -87,7 +87,7 @@ const ModalDetaiAPI = (props) => {
                 disabled
               />
             </div>
-            <div className="d-flex flex-column w-75 m-1">
+            <div className="form-group-child w-75 m-1">
               <label htmlFor="">Method</label>
               <input
                 type="text"
@@ -95,7 +95,7 @@ const ModalDetaiAPI = (props) => {
                 disabled
               />
             </div>
-            <div className="d-flex flex-column w-75 m-1">
+            <div className="form-group-child w-75 m-1">
               <label htmlFor="">Status</label>
               <input
                 type="text"
@@ -105,11 +105,11 @@ const ModalDetaiAPI = (props) => {
             </div>
           </div>
           <div className="form-group d-flex mt-2">
-            <div className="d-flex flex-column w-75 m-1">
+            <div className="form-group-child w-75 m-1">
               <label htmlFor="">Time</label>
               <input
                 type="text"
-                value={dataDetailIP[0]?._source?.api.path || ""}
+                value={dataDetailIP[0]?._source?.api.time || ""}
                 disabled
               />
             </div>

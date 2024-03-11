@@ -45,7 +45,7 @@ const ModalDetaiIP = (props) => {
   return (
     <Modal
       {...props}
-      size="lg"
+      size="xm"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
@@ -55,7 +55,7 @@ const ModalDetaiIP = (props) => {
       <Modal.Body>
         <div className="">
           <div className="form-group d-flex col-md-12">
-            <div className="col-md-6">
+            <div className="form-group-child col-md-6">
               <label htmlFor="">IPAddress</label>
               <input
                 type="text"
@@ -63,7 +63,7 @@ const ModalDetaiIP = (props) => {
                 disabled
               />
             </div>
-            <div>
+            <div className="form-group-child col-md-6">
               <label htmlFor="">Nhóm</label>
               <input
                 type="text"
@@ -73,7 +73,7 @@ const ModalDetaiIP = (props) => {
             </div>
           </div>
           <div className="form-group d-flex mt-2 col-md-12 ">
-            <div className="col-md-6">
+            <div className="form-group-child col-md-6">
               <label htmlFor="">Mã nghiệp vụ</label>
               <input
                 type="text"
@@ -81,7 +81,7 @@ const ModalDetaiIP = (props) => {
                 disabled
               />
             </div>
-            <div className="d-flex flex-column">
+            <div className="form-group-child ">
               <label htmlFor="">Status</label>
               <input
                 type="text"
@@ -91,7 +91,7 @@ const ModalDetaiIP = (props) => {
             </div>
           </div>
           <div className="form-group d-flex mt-2">
-            <div className="d-flex flex-column">
+            <div className="form-group-child">
               <label htmlFor="">Path</label>
               <input
                 type="text"

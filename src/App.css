@@ -61,3 +61,12 @@ input {
   border-radius: 5px;
   border: 1px solid #b1b0b0;
 }
+
+.form-group-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group-child input {
+  width: 200px;
+}
