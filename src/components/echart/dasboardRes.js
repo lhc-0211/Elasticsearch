@@ -67,9 +67,11 @@ const Page = () => {
     title: [
       {
         left: "center",
-        text: "Count request/5m",
+        text: "Count request/ time",
         bottom: "0%",
-        fontSize: 8,
+        textStyle: {
+          fontSize: 12,
+        },
       },
     ],
     xAxis: {

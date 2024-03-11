@@ -61,7 +61,7 @@ const DetailAPI = () => {
         >
           <Table>
             <thead>
-              <tr className="sticky-top row_table_title">
+              <tr className="sticky-top row_table_title row_table_title-bg">
                 <th>Project</th>
                 <th>Group</th>
                 <th>Cmd</th>

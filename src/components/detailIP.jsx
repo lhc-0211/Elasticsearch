@@ -126,7 +126,7 @@ const DetailIP = () => {
         >
           <Table>
             <thead>
-              <tr className="sticky-top row_table_title">
+              <tr className="sticky-top row_table_title row_table_title-bg">
                 <th>IPAddress</th>
                 <th>Nhóm</th>
                 <th>Mã nghiệp vụ</th>

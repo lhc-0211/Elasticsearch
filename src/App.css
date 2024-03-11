@@ -34,11 +34,18 @@
   /* flex-direction: row; */
   justify-content: end;
   flex-wrap: wrap;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
 }
 
 .form-search-children input {
   height: 25px;
   margin: 3px;
+  padding: 8px 4px;
+  font-size: 0.9em;
+  font-weight: 400;
+  line-height: 24px;
 }
 
 Button {
@@ -47,6 +54,10 @@ Button {
 
 Table {
   margin-bottom: 0px !important;
+}
+
+.row_table_title th {
+  background-color: #ededed !important;
 }
 
 .row_table_title th:not(:last-child) {
