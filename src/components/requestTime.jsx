@@ -5,23 +5,24 @@ import DashBoardRes from "./echart/dasboardRes.js";
 
 const RequestTime = () => {
   const [dataListAPI, setDataListAPI] = useState([]);
+  const [test, setTest] = useState([]);
 
   useEffect(() => {
     getElasticSearchData();
-    // fetchData();
+    fetchData();
   }, []);
 
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         "http://192.168.100.64:2001/apis/viewlog?search="
-  //       );
-  //       const result = await response.json();
-  //       setDataListAPI(result);
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        "http://192.168.100.64:2001/apis/viewlog?search="
+      );
+      const result = await response.json();
+      setTest(result);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getElasticSearchData = () => {
     client

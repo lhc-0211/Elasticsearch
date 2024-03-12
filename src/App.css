@@ -57,7 +57,7 @@ Table {
 }
 
 .row_table_title th {
-  background-color: #ededed !important;
+  background-color: #e6e6e6 !important;
 }
 
 .row_table_title th:not(:last-child) {
