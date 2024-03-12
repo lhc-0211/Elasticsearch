@@ -70,21 +70,42 @@ const RequestTime = () => {
 
   return (
     <>
-      <div className="form-search">
-        <div className="form-search-children">
-          <label htmlFor="">Project</label>
-          <input type="text" />
-        </div>
-        <div className="form-search-children">
-          <label htmlFor="">Thời gian</label>
-          <input type="date" />
-        </div>
-      </div>
       <div className="d-flex col-md-12 p-2">
         <div className="col-md-5 mx-1">
+          <div className="form-search">
+            <div className="form-search-children">
+              <label htmlFor="">Project</label>
+              <input type="text" />
+            </div>
+            <div className="form-search-children">
+              <label htmlFor="">Time</label>
+              <select>
+                <option value="1">5m</option>
+                <option value="2">30m</option>
+                <option value="2">1h</option>
+                <option value="2">6h</option>
+                <option value="2">12h</option>
+                <option value="2">1D</option>
+              </select>
+            </div>
+          </div>
           <DashBoardRes />
         </div>
         <div className="col-md-7">
+          <div className="form-search">
+            <div className="form-search-children">
+              <label htmlFor="">Project</label>
+              <input type="text" />
+            </div>
+            <div className="form-search-children">
+              <label htmlFor="">Nhóm</label>
+              <input type="text" />
+            </div>
+            <div className="form-search-children">
+              <label htmlFor="">Thời gian</label>
+              <input type="date" />
+            </div>
+          </div>
           <div
             className="table-container"
             style={{

@@ -8,62 +8,51 @@ const Page = () => {
   const [dataRes, setDataRes] = useState([]);
 
   useEffect(() => {
-    getElasticSearchData();
+    fetchData();
   }, []);
 
   useEffect(() => {
-    viewLog();
+    // viewLog();
   }, [dataRes]);
 
-  const viewLog = () => {
-    // Tạo một đối tượng để lưu trữ số lượng request cho từng khoảng thời gian
-    const requestCounts = {};
-    const timeRes = [];
-
-    // Lặp qua mỗi mục trong mảng dữ liệu
-    dataRes.forEach((item) => {
-      // Chuyển đổi requestTime từ dạng chuỗi thành đối tượng Date
-      const requestTime = new Date(item._source.api.time);
-
-      timeRes.push(requestTime.toLocaleTimeString());
-
-      // Tính toán chỉ số khoảng thời gian (5 phút)
-      const timeIndex = Math.floor(requestTime.getTime() / (5 * 60 * 1000));
-
-      // Kiểm tra xem timeIndex đã được định nghĩa trong requestCounts hay chưa
-      if (!requestCounts[timeIndex]) {
-        requestCounts[timeIndex] = 1;
-      } else {
-        requestCounts[timeIndex]++;
-      }
-    });
-
-    setTimeRes(timeRes);
-    setDashboardData(requestCounts);
-  };
-
-  const getElasticSearchData = () => {
-    client
-      .search({
-        index: "loginfor",
-        body: {
-          query: {
-            match_all: {},
-          },
-        },
-      })
-      .then((response) => {
-        // Xử lý dữ liệu ở đây
-        const hits = response.hits.hits;
-        setDataRes(hits);
-      })
-      .catch((error) => {
-        console.error("Error while searching:", error);
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `http://192.168.100.64:2001/apis/dashboard?date=2024-03-08`
+      );
+      const time = [];
+      const result = await response.json();
+      result.forEach((element) => {
+        time.push(element.startTime);
       });
+      setDashboardData(time);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
+
+  // const getElasticSearchData = () => {
+  //   client
+  //     .search({
+  //       index: "loginfor",
+  //       body: {
+  //         query: {
+  //           match_all: {},
+  //         },
+  //       },
+  //     })
+  //     .then((response) => {
+  //       // Xử lý dữ liệu ở đây
+  //       const hits = response.hits.hits;
+  //       setDataRes(hits);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error while searching:", error);
+  //     });
+  // };
 
   const options = {
-    grid: { top: 8, right: 18, bottom: 30, left: 19 },
+    grid: { top: 8, right: 18, bottom: 25, left: 19 },
     title: [
       {
         left: "center",
@@ -91,10 +80,10 @@ const Page = () => {
         color: "#83817C",
         fontSize: 8,
         borderColor: "#ECECEC",
-        formatter: function (value) {
-          const arr = value.split(":");
-          return arr[0] + ":" + arr[1];
-        },
+        // formatter: function (value) {
+        //   const arr = value?.split(":");
+        //   return arr[0] + ":" + arr[1];
+        // },
         interval: 6,
       },
     },

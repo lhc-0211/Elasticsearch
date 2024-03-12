@@ -11,32 +11,45 @@ const ModalDetaiIP = (props) => {
     if (!id) {
       return;
     }
-    getElasticSearchData(id);
+    fetchData(id);
   }, [id]);
 
-  const getElasticSearchData = (id) => {
-    console.log("id", id);
+  // const getElasticSearchData = (id) => {
+  //   console.log("id", id);
 
-    client
-      .search({
-        index: "loginfor",
-        body: {
-          query: {
-            match: {
-              _id: id,
-            },
-          },
-        },
-      })
-      .then((response) => {
-        // Xử lý dữ liệu ở đây
-        const hits = response.hits.hits;
-        setDataDetailIP(hits);
-      })
-      .catch((error) => {
-        console.error("Error while searching:", error);
-      });
+  //   client
+  //     .search({
+  //       index: "loginfor",
+  //       body: {
+  //         query: {
+  //           match: {
+  //             _id: id,
+  //           },
+  //         },
+  //       },
+  //     })
+  //     .then((response) => {
+  //       // Xử lý dữ liệu ở đây
+  //       const hits = response.hits.hits;
+  //       setDataDetailIP(hits);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error while searching:", error);
+  //     });
+  // };
+
+  const fetchData = async (id) => {
+    try {
+      const response = await fetch(
+        `http://192.168.100.64:2001/apis/viewlog/${id}`
+      );
+      const result = await response.json();
+      setDataDetailIP(result);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
+
   const handleClose = () => {
     setDataDetailIP([]);
     setModalShow(false);
@@ -59,7 +72,7 @@ const ModalDetaiIP = (props) => {
               <label htmlFor="">IPAddress</label>
               <input
                 type="text"
-                value={dataDetailIP[0]?._source?.client.ip || ""}
+                value={dataDetailIP?.client?.ip || ""}
                 disabled
               />
             </div>
@@ -67,7 +80,7 @@ const ModalDetaiIP = (props) => {
               <label htmlFor="">Nhóm</label>
               <input
                 type="text"
-                value={dataDetailIP[0]?._source?.api.group || ""}
+                value={dataDetailIP?.api?.group || ""}
                 disabled
               />
             </div>
@@ -77,7 +90,7 @@ const ModalDetaiIP = (props) => {
               <label htmlFor="">Mã nghiệp vụ</label>
               <input
                 type="text"
-                value={dataDetailIP[0]?._source?.api.group || ""}
+                value={dataDetailIP?.api?.cmd || ""}
                 disabled
               />
             </div>
@@ -85,7 +98,7 @@ const ModalDetaiIP = (props) => {
               <label htmlFor="">Status</label>
               <input
                 type="text"
-                value={dataDetailIP[0]?._source?.api.status || ""}
+                value={dataDetailIP?.api?.status || ""}
                 disabled
               />
             </div>
@@ -95,7 +108,7 @@ const ModalDetaiIP = (props) => {
               <label htmlFor="">Path</label>
               <input
                 type="text"
-                value={dataDetailIP[0]?._source?.api.path || ""}
+                value={dataDetailIP?.api?.path || ""}
                 disabled
               />
             </div>

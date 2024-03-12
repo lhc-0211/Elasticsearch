@@ -29,66 +29,78 @@ const DetailIP = () => {
   const preMaNV = usePrevious(maNV);
 
   useEffect(() => {
-    getElasticSearchData();
+    fetchData();
   }, []);
 
-  useEffect(() => {
-    if (
-      (project && !_.isEqual(project, preProject)) ||
-      (user && !_.isEqual(user, preUser)) ||
-      (group && !_.isEqual(group, preGroup)) ||
-      (maNV && !_.isEqual(maNV, preMaNV))
-    ) {
-      getElasticSearchData();
-    }
-  }, [project, user, maNV, group]);
+  // useEffect(() => {
+  //   if (
+  //     (project && !_.isEqual(project, preProject)) ||
+  //     (user && !_.isEqual(user, preUser)) ||
+  //     (group && !_.isEqual(group, preGroup)) ||
+  //     (maNV && !_.isEqual(maNV, preMaNV))
+  //   ) {
+  //     getElasticSearchData();
+  //   }
+  // }, [project, user, maNV, group]);
 
-  const getElasticSearchData = () => {
-    // if (user || project || group || maNV) {
-    //   client
-    //     .search({
-    //       index: "loginfor",
-    //       body: {
-    //         query: {
-    //           bool: {
-    //             should: [
-    //               { term: { api: project } },
-    //               { term: { project: user } },
-    //               { term: { project: group } },
-    //               { term: { project: maNV } },
-    //             ],
-    //           },
-    //         },
-    //       },
-    //     })
-    //     .then((response) => {
-    //       // Xử lý dữ liệu ở đây
-    //       const hits = response.hits.hits;
-    //       setDataListIP(hits);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error while searching:", error);
-    //     });
-    // } else {
-    client
-      .search({
-        index: "loginfor",
-        body: {
-          query: {
-            match_all: {},
-          },
-        },
-      })
-      .then((response) => {
-        // Xử lý dữ liệu ở đây
-        const hits = response.hits.hits;
-        setDataListIP(hits);
-      })
-      .catch((error) => {
-        console.error("Error while searching:", error);
-      });
-    // }
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        "http://192.168.100.64:2001/apis/viewlog?search="
+      );
+      const result = await response.json();
+      setDataListIP(result);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
+
+  // const getElasticSearchData = () => {
+  //   // if (user || project || group || maNV) {
+  //   //   client
+  //   //     .search({
+  //   //       index: "loginfor",
+  //   //       body: {
+  //   //         query: {
+  //   //           bool: {
+  //   //             should: [
+  //   //               { term: { api: project } },
+  //   //               { term: { project: user } },
+  //   //               { term: { project: group } },
+  //   //               { term: { project: maNV } },
+  //   //             ],
+  //   //           },
+  //   //         },
+  //   //       },
+  //   //     })
+  //   //     .then((response) => {
+  //   //       // Xử lý dữ liệu ở đây
+  //   //       const hits = response.hits.hits;
+  //   //       setDataListIP(hits);
+  //   //     })
+  //   //     .catch((error) => {
+  //   //       console.error("Error while searching:", error);
+  //   //     });
+  //   // } else {
+  //   client
+  //     .search({
+  //       index: "loginfor",
+  //       body: {
+  //         query: {
+  //           match_all: {},
+  //         },
+  //       },
+  //     })
+  //     .then((response) => {
+  //       // Xử lý dữ liệu ở đây
+  //       const hits = response.hits.hits;
+  //       setDataListIP(hits);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error while searching:", error);
+  //     });
+  //   // }
+  // };
 
   const handleDetail = (id) => {
     setModalShow(true);
@@ -136,25 +148,26 @@ const DetailIP = () => {
               </tr>
             </thead>
             <tbody>
-              {dataListIP.map((item, index) => {
-                return (
-                  <tr key={index} className="row_table_detail">
-                    <td>{item._source.client.ip}</td>
-                    <td>{item._source.api.group}</td>
-                    <td>{item._source.api.group}</td>
-                    <td>{item._source.api.status}</td>
-                    <td>{item._source.api.path}</td>
-                    <td>
-                      <Button
-                        variant="warning"
-                        onClick={() => handleDetail(item._id)}
-                      >
-                        Xem
-                      </Button>
-                    </td>
-                  </tr>
-                );
-              })}
+              {Array.isArray(dataListIP.content) &&
+                dataListIP.content.map((item, index) => {
+                  return (
+                    <tr key={index} className="row_table_detail">
+                      <td>{item.client.ip}</td>
+                      <td>{item.api.group}</td>
+                      <td>{item.api.cmd}</td>
+                      <td>{item.api.status}</td>
+                      <td>{item.api.path}</td>
+                      <td>
+                        <Button
+                          variant="warning"
+                          onClick={() => handleDetail(item.id)}
+                        >
+                          Xem
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </Table>
         </div>
