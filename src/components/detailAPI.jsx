@@ -9,15 +9,28 @@ const DetailAPI = () => {
   const [modalShow, setModalShow] = useState(false);
 
   useEffect(() => {
-    // getElasticSearchData();
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      // Set timeout, for example, 10 seconds
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch(
-        "http://192.168.100.64:2001/apis/viewlog?search="
+        "http://192.168.100.64:2001/apis/viewlog?project=&group=&user=&major=",
+        { signal }
       );
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const result = await response.json();
       setdataListAPI(result);
     } catch (error) {
@@ -25,30 +38,14 @@ const DetailAPI = () => {
     }
   };
 
-  // const getElasticSearchData = () => {
-  //   client
-  //     .search({
-  //       index: "loginfor",
-  //       body: {
-  //         query: {
-  //           match_all: {},
-  //         },
-  //       },
-  //     })
-  //     .then((response) => {
-  //       // Xử lý dữ liệu ở đây
-  //       const hits = response.hits.hits;
-  //       setdataListAPI(hits);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error while searching:", error);
-  //     });
-  // };
-
   const handleDetail = (id) => {
     setModalShow(true);
     setId(id);
   };
+
+  function onClose() {
+    setModalShow(false);
+  }
 
   return (
     <div className=" p-2">
@@ -76,8 +73,8 @@ const DetailAPI = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(dataListAPI?.content) &&
-                dataListAPI.content.map((item, index) => {
+              {dataListAPI.length > 0 ? (
+                dataListAPI.map((item, index) => {
                   return (
                     <tr key={index} className="row_table_detail">
                       <td>{item.api.project}</td>
@@ -87,7 +84,7 @@ const DetailAPI = () => {
                       <td>{item.api.method}</td>
                       <td>{JSON.stringify(item.api.data)}</td>
                       <td>{item.api.status}</td>
-                      <td>{item.api.time}</td>
+                      <td>{item.requestTime}</td>
                       <td>
                         <Button
                           variant="warning"
@@ -98,12 +95,29 @@ const DetailAPI = () => {
                       </td>
                     </tr>
                   );
-                })}
+                })
+              ) : (
+                <tr
+                  className=""
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  <td colSpan="10">Không có dữ liệu</td>
+                </tr>
+              )}
             </tbody>
           </Table>
         </div>
       </div>
-      <ModalDetaiAPI show={modalShow} setModalShow={setModalShow} id={id} />
+      {modalShow && (
+        <ModalDetaiAPI
+          onClose={onClose}
+          show={modalShow}
+          setmodalshow={setModalShow}
+          id={id}
+        />
+      )}
     </div>
   );
 };

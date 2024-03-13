@@ -1,109 +1,128 @@
 import React, { useState, useEffect, memo } from "react";
 import { Table } from "react-bootstrap";
-import client from "../connection.js";
 import DashBoardRes from "./echart/dasboardRes.js";
+import * as _ from "lodash";
+
+function usePrevious(value) {
+  const ref = React.useRef();
+
+  React.useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  return ref.current;
+}
 
 const RequestTime = () => {
-  const [dataListAPI, setDataListAPI] = useState([]);
-  const [test, setTest] = useState([]);
+  const [dataCountAPI, setDataCountAPI] = useState([]);
+  const [dataChart, setDataChart] = useState([]);
+  const [project, setProject] = useState(null);
+  const [group, setGroup] = useState(null);
+  const [date, setDate] = useState(new Date().toISOString().substring(0, 10));
+  const [time, setTime] = useState("5");
+
+  const preGroup = usePrevious(group);
+  const preProject = usePrevious(project);
+  const preDate = usePrevious(date);
+  const preTime = usePrevious(time);
 
   useEffect(() => {
-    getElasticSearchData();
-    fetchData();
-  }, []);
+    if (
+      !_.isEqual(time, preTime) ||
+      !_.isEqual(project, preProject) ||
+      !_.isEqual(date, preDate)
+    ) {
+      fetchDataChart(time, date, project);
+    }
+  }, [time, project, date]);
 
-  const fetchData = async () => {
+  useEffect(() => {
+    if (
+      (project && !_.isEqual(project, preProject)) ||
+      (group && !_.isEqual(group, preGroup)) ||
+      (date && !_.isEqual(date, preDate))
+    ) {
+      fetchDataCount(group, date, project);
+    }
+  }, [project, group, date]);
+
+  const fetchDataChart = async (time, date, project) => {
+    const pro = project || "";
     try {
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      // Set timeout, for example, 10 seconds
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch(
-        "http://192.168.100.64:2001/apis/viewlog?search="
+        `http://192.168.100.64:2001/apis/dashboard?project=${pro}&date=${date}&time=${time}`,
+        { signal }
       );
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const result = await response.json();
-      setTest(result);
+      setDataChart(result);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const getElasticSearchData = () => {
-    client
-      .search({
-        index: "loginfor",
-        body: {
-          query: {
-            match_all: {},
-          },
-        },
-      })
-      .then((response) => {
-        // Xử lý dữ liệu ở đây
-        const hits = response.hits.hits;
-        const groupedData = groupDataByAPI(hits);
-        setDataListAPI(groupedData);
-      })
-      .catch((error) => {
-        console.error("Error while searching:", error);
-      });
-  };
-
-  const groupDataByAPI = (data) => {
-    const grouped = data.reduce((accumulator, currentItem) => {
-      const apiCmd = currentItem._source.api.cmd;
-      if (!accumulator[apiCmd]) {
-        accumulator[apiCmd] = {
-          count: 1,
-          errors: 1,
-          avgTime: 1,
-        };
-      } else {
-        accumulator[apiCmd].count += 1;
-        accumulator[apiCmd].errors += 1;
-        accumulator[apiCmd].avgTime += 1;
-      }
-      return accumulator;
-    }, {});
-
-    return Object.entries(grouped).map(([apiCmd, values]) => ({
-      api: { cmd: apiCmd },
-      ...values,
-    }));
+  const fetchDataCount = async (group, date, project) => {
+    const pro = project || "";
+    const gro = group || "";
+    try {
+      const response = await fetch(
+        `http://192.168.100.64:2001/apis/average?project=${pro}&date=${date}&group=${gro}`
+      );
+      const result = await response.json();
+      setDataCountAPI(result);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   return (
     <>
       <div className="d-flex col-md-12 p-2">
-        <div className="col-md-5 mx-1">
+        <div className="col-md-7 mx-1">
           <div className="form-search">
             <div className="form-search-children">
-              <label htmlFor="">Project</label>
-              <input type="text" />
-            </div>
-            <div className="form-search-children">
               <label htmlFor="">Time</label>
-              <select>
-                <option value="1">5m</option>
-                <option value="2">30m</option>
-                <option value="2">1h</option>
-                <option value="2">6h</option>
-                <option value="2">12h</option>
-                <option value="2">1D</option>
+              <select onChange={(e) => setTime(e.target.value)}>
+                <option value="5">5m</option>
+                <option value="30">30m</option>
+                <option value="60">1h</option>
+                {/* <option value="360">6h</option> */}
+                {/* <option value="720">12h</option> */}
+                {/* <option value="1440">1D</option> */}
               </select>
             </div>
           </div>
-          <DashBoardRes />
+          <DashBoardRes dataChart={dataChart} />
         </div>
-        <div className="col-md-7">
+        <div className="col-md-5">
           <div className="form-search">
             <div className="form-search-children">
               <label htmlFor="">Project</label>
-              <input type="text" />
+              <input type="text" onBlur={(e) => setProject(e.target.value)} />
             </div>
             <div className="form-search-children">
-              <label htmlFor="">Nhóm</label>
-              <input type="text" />
+              <label htmlFor="">Group</label>
+              <input type="text" onBlur={(e) => setGroup(e.target.value)} />
             </div>
             <div className="form-search-children">
               <label htmlFor="">Thời gian</label>
-              <input type="date" />
+              <input
+                type="date"
+                defaultValue={date}
+                onBlur={(e) => setDate(e.target.value)}
+              />
             </div>
           </div>
           <div
@@ -125,16 +144,27 @@ const RequestTime = () => {
                 </tr>
               </thead>
               <tbody>
-                {dataListAPI.map((item, index) => {
-                  return (
-                    <tr key={index} className="row_table_detail">
-                      <td>{item.api.cmd}</td>
-                      <td>{item.count}</td>
-                      <td>{item.errors}</td>
-                      <td>{item.avgTime}</td>
-                    </tr>
-                  );
-                })}
+                {dataCountAPI.length > 0 ? (
+                  dataCountAPI.map((item, index) => {
+                    return (
+                      <tr key={index} className="row_table_detail">
+                        <td>{item.api}</td>
+                        <td>{item.count}</td>
+                        <td>{item.errors}</td>
+                        <td>{item.average}</td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr
+                    className=""
+                    style={{
+                      textAlign: "center",
+                    }}
+                  >
+                    <td colSpan="10">Không có dữ liệu</td>
+                  </tr>
+                )}
               </tbody>
             </Table>
           </div>

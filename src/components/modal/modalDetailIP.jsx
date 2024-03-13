@@ -1,48 +1,36 @@
 import Modal from "react-bootstrap/Modal";
 import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
-import client from "../../connection.js";
 
 const ModalDetaiIP = (props) => {
   const [dataDetailIP, setDataDetailIP] = useState([]);
-  const { id, setModalShow } = props;
+  const { id, modalShow, onClose } = props;
 
   useEffect(() => {
-    if (!id) {
-      return;
+    if (id && modalShow) {
+      fetchData();
     }
-    fetchData(id);
-  }, [id]);
+  }, [id, modalShow]);
 
-  // const getElasticSearchData = (id) => {
-  //   console.log("id", id);
-
-  //   client
-  //     .search({
-  //       index: "loginfor",
-  //       body: {
-  //         query: {
-  //           match: {
-  //             _id: id,
-  //           },
-  //         },
-  //       },
-  //     })
-  //     .then((response) => {
-  //       // Xử lý dữ liệu ở đây
-  //       const hits = response.hits.hits;
-  //       setDataDetailIP(hits);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error while searching:", error);
-  //     });
-  // };
-
-  const fetchData = async (id) => {
+  const fetchData = async () => {
     try {
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      // Set timeout, for example, 10 seconds
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch(
-        `http://192.168.100.64:2001/apis/viewlog/${id}`
+        `http://192.168.100.64:2001/apis/viewlog/${id}`,
+        { signal }
       );
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const result = await response.json();
       setDataDetailIP(result);
     } catch (error) {
@@ -52,63 +40,99 @@ const ModalDetaiIP = (props) => {
 
   const handleClose = () => {
     setDataDetailIP([]);
-    setModalShow(false);
+    onClose();
   };
 
   return (
-    <Modal
-      {...props}
-      size="xm"
-      aria-labelledby="contained-modal-title-vcenter"
-      centered
-    >
+    <Modal size="lg" centered show={modalShow}>
       <Modal.Header>
         <Modal.Title id="contained-modal-title-vcenter">Chi tiết</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="">
           <div className="form-group d-flex col-md-12">
-            <div className="form-group-child col-md-6">
+            <div className="form-group-child col-md-4">
               <label htmlFor="">IPAddress</label>
               <input
+                className="w-75"
                 type="text"
                 value={dataDetailIP?.client?.ip || ""}
                 disabled
               />
             </div>
-            <div className="form-group-child col-md-6">
+            <div className="form-group-child col-md-4">
               <label htmlFor="">Nhóm</label>
               <input
+                className="w-75"
                 type="text"
                 value={dataDetailIP?.api?.group || ""}
                 disabled
               />
             </div>
-          </div>
-          <div className="form-group d-flex mt-2 col-md-12 ">
-            <div className="form-group-child col-md-6">
+            <div className="form-group-child col-md-4">
               <label htmlFor="">Mã nghiệp vụ</label>
               <input
+                className="w-75"
                 type="text"
                 value={dataDetailIP?.api?.cmd || ""}
                 disabled
               />
             </div>
-            <div className="form-group-child ">
+          </div>
+          <div className="form-group d-flex mt-2 col-md-12 ">
+            <div className="form-group-child col-md-4">
               <label htmlFor="">Status</label>
               <input
+                className="w-75"
                 type="text"
                 value={dataDetailIP?.api?.status || ""}
                 disabled
               />
             </div>
-          </div>
-          <div className="form-group d-flex mt-2">
-            <div className="form-group-child">
+            <div className="form-group-child col-md-4">
               <label htmlFor="">Path</label>
               <input
+                className="w-75"
                 type="text"
                 value={dataDetailIP?.api?.path || ""}
+                disabled
+              />
+            </div>
+            <div className="form-group-child col-md-4">
+              <label htmlFor="">User</label>
+              <input
+                className="w-75"
+                type="text"
+                value={dataDetailIP?.client?.user || ""}
+                disabled
+              />
+            </div>
+          </div>
+          <div className="form-group d-flex mt-2 col-md-12 ">
+            <div className="form-group-child col-md-4">
+              <label htmlFor="">User id</label>
+              <input
+                className="w-75"
+                type="text"
+                value={dataDetailIP?.client?.id || ""}
+                disabled
+              />
+            </div>
+            <div className="form-group-child col-md-4">
+              <label htmlFor="">User ip</label>
+              <input
+                className="w-75"
+                type="text"
+                value={dataDetailIP?.client?.ip || ""}
+                disabled
+              />
+            </div>
+            <div className="form-group-child col-md-4">
+              <label htmlFor="">Browser</label>
+              <input
+                className="w-75"
+                type="text"
+                value={dataDetailIP?.client?.browser || ""}
                 disabled
               />
             </div>

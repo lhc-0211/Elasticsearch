@@ -29,25 +29,40 @@ const DetailIP = () => {
   const preMaNV = usePrevious(maNV);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (
+      !_.isEqual(project, preProject) ||
+      !_.isEqual(user, preUser) ||
+      !_.isEqual(group, preGroup) ||
+      !_.isEqual(maNV, preMaNV)
+    ) {
+      fetchData(project, user, maNV, group);
+    }
+  }, [project, user, maNV, group]);
 
-  // useEffect(() => {
-  //   if (
-  //     (project && !_.isEqual(project, preProject)) ||
-  //     (user && !_.isEqual(user, preUser)) ||
-  //     (group && !_.isEqual(group, preGroup)) ||
-  //     (maNV && !_.isEqual(maNV, preMaNV))
-  //   ) {
-  //     getElasticSearchData();
-  //   }
-  // }, [project, user, maNV, group]);
+  const fetchData = async (project, user, maNV, group) => {
+    const pro = project || "";
+    const us = user || "";
+    const ma = maNV || "";
+    const gro = group || "";
 
-  const fetchData = async () => {
     try {
+      const controller = new AbortController();
+      const { signal } = controller;
+
+      // Set timeout, for example, 10 seconds
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch(
-        "http://192.168.100.64:2001/apis/viewlog?search="
+        `http://192.168.100.64:2001/apis/viewlog?project=${pro}&group=${gro}&user=${us}&major=${ma}`,
+        { signal }
       );
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
       const result = await response.json();
       setDataListIP(result);
     } catch (error) {
@@ -55,57 +70,14 @@ const DetailIP = () => {
     }
   };
 
-  // const getElasticSearchData = () => {
-  //   // if (user || project || group || maNV) {
-  //   //   client
-  //   //     .search({
-  //   //       index: "loginfor",
-  //   //       body: {
-  //   //         query: {
-  //   //           bool: {
-  //   //             should: [
-  //   //               { term: { api: project } },
-  //   //               { term: { project: user } },
-  //   //               { term: { project: group } },
-  //   //               { term: { project: maNV } },
-  //   //             ],
-  //   //           },
-  //   //         },
-  //   //       },
-  //   //     })
-  //   //     .then((response) => {
-  //   //       // Xử lý dữ liệu ở đây
-  //   //       const hits = response.hits.hits;
-  //   //       setDataListIP(hits);
-  //   //     })
-  //   //     .catch((error) => {
-  //   //       console.error("Error while searching:", error);
-  //   //     });
-  //   // } else {
-  //   client
-  //     .search({
-  //       index: "loginfor",
-  //       body: {
-  //         query: {
-  //           match_all: {},
-  //         },
-  //       },
-  //     })
-  //     .then((response) => {
-  //       // Xử lý dữ liệu ở đây
-  //       const hits = response.hits.hits;
-  //       setDataListIP(hits);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error while searching:", error);
-  //     });
-  //   // }
-  // };
-
   const handleDetail = (id) => {
     setModalShow(true);
     setId(id);
   };
+
+  function onClose() {
+    setModalShow(false);
+  }
 
   return (
     <div className="p-2 w-100">
@@ -113,19 +85,19 @@ const DetailIP = () => {
         <div className="form-search w-100">
           <div className="form-search-children">
             <label htmlFor="">Project</label>
-            <input type="text" onChange={(e) => setProject(e.target.value)} />
+            <input type="text" onBlur={(e) => setProject(e.target.value)} />
           </div>
           <div className="form-search-children">
             <label htmlFor="">User</label>
-            <input type="text" onChange={(e) => setUser(e.target.value)} />
+            <input type="text" onBlur={(e) => setUser(e.target.value)} />
           </div>
           <div className="form-search-children">
             <label htmlFor="">Group</label>
-            <input type="text" onChange={(e) => setGroup(e.target.value)} />
+            <input type="text" onBlur={(e) => setGroup(e.target.value)} />
           </div>
           <div className="form-search-children">
             <label htmlFor="">Mã nghiệp vụ</label>
-            <input type="text" onChange={(e) => setMaNV(e.target.value)} />
+            <input type="text" onBlur={(e) => setMaNV(e.target.value)} />
           </div>
         </div>
         <div
@@ -148,8 +120,8 @@ const DetailIP = () => {
               </tr>
             </thead>
             <tbody>
-              {Array.isArray(dataListIP.content) &&
-                dataListIP.content.map((item, index) => {
+              {dataListIP.length > 0 ? (
+                dataListIP.map((item, index) => {
                   return (
                     <tr key={index} className="row_table_detail">
                       <td>{item.client.ip}</td>
@@ -167,12 +139,29 @@ const DetailIP = () => {
                       </td>
                     </tr>
                   );
-                })}
+                })
+              ) : (
+                <tr
+                  className=""
+                  style={{
+                    textAlign: "center",
+                  }}
+                >
+                  <td colSpan="10">Không có dữ liệu</td>
+                </tr>
+              )}
             </tbody>
           </Table>
         </div>
       </div>
-      <ModalDetaiIP show={modalShow} setModalShow={setModalShow} id={id} />
+      {modalShow && (
+        <ModalDetaiIP
+          modalShow={modalShow}
+          setmodalshow={setModalShow}
+          id={id}
+          onClose={onClose}
+        />
+      )}
     </div>
   );
 };

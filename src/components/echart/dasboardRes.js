@@ -1,58 +1,30 @@
 import React, { useState, useEffect } from "react";
 import ReactECharts from "echarts-for-react";
-import client from "../../connection.js";
 
-const Page = () => {
+const Page = (props) => {
   const [dashboardData, setDashboardData] = useState([]);
   const [timeRes, setTimeRes] = useState([]);
   const [dataRes, setDataRes] = useState([]);
 
+  const { dataChart } = props;
+
+  const valueList =
+    Array.isArray(dataChart) && dataChart.map((item) => item.countLog);
+
+  const timeList =
+    Array.isArray(dataChart) && dataChart.map((item) => item.startTime);
+
   useEffect(() => {
-    fetchData();
+    // fetchData();
   }, []);
 
   useEffect(() => {
     // viewLog();
   }, [dataRes]);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(
-        `http://192.168.100.64:2001/apis/dashboard?date=2024-03-08`
-      );
-      const time = [];
-      const result = await response.json();
-      result.forEach((element) => {
-        time.push(element.startTime);
-      });
-      setDashboardData(time);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  // const getElasticSearchData = () => {
-  //   client
-  //     .search({
-  //       index: "loginfor",
-  //       body: {
-  //         query: {
-  //           match_all: {},
-  //         },
-  //       },
-  //     })
-  //     .then((response) => {
-  //       // Xử lý dữ liệu ở đây
-  //       const hits = response.hits.hits;
-  //       setDataRes(hits);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error while searching:", error);
-  //     });
-  // };
-
   const options = {
-    grid: { top: 8, right: 18, bottom: 25, left: 19 },
+    type: "continuous",
+    grid: { top: 8, right: 18, bottom: 35, left: 19 },
     title: [
       {
         left: "center",
@@ -65,26 +37,33 @@ const Page = () => {
     ],
     xAxis: {
       type: "category",
-      data: timeRes,
+      data: timeList,
       boundaryGap: false,
       splitLine: {
         show: true,
         lineStyle: {
           type: "dashed",
-          color: "#4E4D62",
+          color: "#3F3E4F",
           dashOffset: 10,
           opacity: 0.3,
         },
+      },
+      axisTick: {
+        alignWithLabel: true,
+        length: 3,
       },
       axisLabel: {
         color: "#83817C",
         fontSize: 8,
         borderColor: "#ECECEC",
-        // formatter: function (value) {
-        //   const arr = value?.split(":");
-        //   return arr[0] + ":" + arr[1];
-        // },
-        interval: 6,
+        formatter: function (value) {
+          const arr = value?.split(" ");
+          return arr[1];
+        },
+        interval: 30,
+        borderColor: "#ECECEC",
+        showMinLabel: true,
+        showMaxLabel: true,
       },
     },
     yAxis: {
@@ -109,7 +88,7 @@ const Page = () => {
     },
     series: [
       {
-        data: Object.values(dashboardData),
+        data: valueList,
         type: "line",
         smooth: false,
       },
