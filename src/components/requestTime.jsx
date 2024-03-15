@@ -53,7 +53,7 @@ const RequestTime = () => {
       const { signal } = controller;
 
       // Set timeout, for example, 10 seconds
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
 
       const response = await fetch(
         `http://10.64.103.135:2001/apis/dashboard?project=${pro}&date=${date}&time=${time}`,
