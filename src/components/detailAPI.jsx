@@ -21,7 +21,7 @@ const DetailAPI = () => {
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(
-        "http://192.168.100.64:2001/apis/viewlog?project=&group=&user=&major=",
+        "http://10.64.103.135:2001/apis/viewlog?project=&group=&user=&major=",
         { signal }
       );
 

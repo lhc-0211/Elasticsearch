@@ -21,7 +21,7 @@ const ModalDetaiIP = (props) => {
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(
-        `http://192.168.100.64:2001/apis/viewlog/${id}`,
+        `http://10.64.103.135:2001/apis/viewlog/${id}`,
         { signal }
       );
 

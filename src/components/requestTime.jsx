@@ -56,7 +56,7 @@ const RequestTime = () => {
       const timeoutId = setTimeout(() => controller.abort(), 10000);
 
       const response = await fetch(
-        `http://192.168.100.64:2001/apis/dashboard?project=${pro}&date=${date}&time=${time}`,
+        `http://10.64.103.135:2001/apis/dashboard?project=${pro}&date=${date}&time=${time}`,
         { signal }
       );
 
@@ -78,7 +78,7 @@ const RequestTime = () => {
     const gro = group || "";
     try {
       const response = await fetch(
-        `http://192.168.100.64:2001/apis/average?project=${pro}&date=${date}&group=${gro}`
+        `http://10.64.103.135:2001/apis/average?project=${pro}&date=${date}&group=${gro}`
       );
       const result = await response.json();
       setDataCountAPI(result);
